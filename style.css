@@ -1,17 +1,9 @@
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 body {
   background-color: #121212;
   color: #fff;
   font-family: Arial, sans-serif;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  margin: 0;
+  padding: 0;
 }
 
 header {
@@ -23,25 +15,21 @@ header {
 
 h1 {
   color: #ff4444;
-  font-size: 32px;
-}
-
-main {
-  flex: 1;
-  padding: 20px;
+  margin: 0;
 }
 
 .gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
+  padding: 20px;
 }
 
 .card {
   background: #222;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
   transition: transform 0.3s ease;
 }
 
@@ -52,25 +40,17 @@ main {
 .card video {
   width: 100%;
   height: auto;
-  display: block;
 }
 
 .info {
-  padding: 15px;
+  padding: 10px;
 }
 
 .tag {
-  display: inline-block;
   background: crimson;
-  padding: 3px 8px;
+  padding: 2px 6px;
   border-radius: 4px;
   font-size: 12px;
-  margin-bottom: 8px;
-}
-
-.info h2 {
-  margin-top: 8px;
-  font-size: 20px;
 }
 
 .rating {
@@ -78,26 +58,28 @@ main {
   font-weight: bold;
 }
 
-.release {
-  margin-top: 8px;
-  font-size: 14px;
-  color: #ccc;
-}
-
-table {
-  width: 100%;
-  margin-top: 20px;
-  border-collapse: collapse;
-}
-
-footer {
+.footer {
   background: #1f1f1f;
-  padding: 15px;
+  padding: 10px;
   text-align: center;
   border-top: 2px solid red;
 }
 
-footer p {
+.footer p {
+  margin: 0;
   color: green;
-  font-size: 14px;
-  }
+}
+
+.button {
+  background: #ff4444;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #e03e3e;
+}
