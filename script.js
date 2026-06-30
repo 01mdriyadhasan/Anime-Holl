@@ -261,6 +261,73 @@ function debounceSearch() {
   clearTimeout(searchTimer);
   searchTimer = setTimeout(() => renderBrowse(document.getElementById('searchInput').value, browseCategory), 350);
 }
+/* =====================
+   VIDEO URL → PLAYER MARKUP
+   (YouTube, Drive, Vimeo, FB, Dailymotion, .mp4 ইত্যাদি সব support)
+===================== */
+function getPlayerEmbed(url, poster) {
+  if (!url || !url.trim()) {
+    return `
+      <div class="watch-no-video">
+        <img class="bg-blur" src="${poster}" onerror="">
+        <div class="watch-no-video-inner">
+          <div style="font-size:60px">▶</div>
+          <p style="font-size:15px;margin-top:10px">ভিডিও URL সংযুক্ত করা হয়নি</p>
+          <p style="font-size:13px;color:#6b7280;margin-top:4px">Admin Panel থেকে Video URL যোগ করুন</p>
+        </div>
+      </div>`;
+  }
+
+  const u = url.trim();
+  const iframeAttrs = 'width="100%" height="100%" frameborder="0" ' +
+    'allow="autoplay; encrypted-media; picture-in-picture; fullscreen" ' +
+    'allowfullscreen style="width:100%;height:100%;background:#000"';
+
+  // ১. সম্পূর্ণ <iframe> embed code পেস্ট করা হলে (যেমন YouTube/FB এর "Embed" থেকে কপি করা)
+  if (/^\s*<iframe[\s\S]*<\/iframe>\s*$/i.test(u)) {
+    return u; // user নিজেই embed code দিয়েছেন, সরাসরি ব্যবহার
+  }
+
+  // ২. YouTube — watch?v=, youtu.be/, shorts/, embed/
+  let m = u.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|v\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+  if (m) {
+    return `<iframe src="https://www.youtube.com/embed/${m[1]}?autoplay=1&rel=0" ${iframeAttrs}></iframe>`;
+  }
+
+  // ৩. Google Drive — /file/d/ID/... অথবা ?id=ID
+  m = u.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:.*&)?id=)([A-Za-z0-9_-]+)/);
+  if (m) {
+    return `<iframe src="https://drive.google.com/file/d/${m[1]}/preview" ${iframeAttrs} allow="autoplay"></iframe>`;
+  }
+
+  // ৪. Vimeo
+  m = u.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+  if (m) {
+    return `<iframe src="https://player.vimeo.com/video/${m[1]}?autoplay=1" ${iframeAttrs}></iframe>`;
+  }
+
+  // ৫. Dailymotion
+  m = u.match(/(?:dailymotion\.com\/(?:video|embed\/video)\/|dai\.ly\/)([A-Za-z0-9]+)/);
+  if (m) {
+    return `<iframe src="https://www.dailymotion.com/embed/video/${m[1]}?autoplay=1" ${iframeAttrs}></iframe>`;
+  }
+
+  // ৬. Facebook video / fb.watch
+  if (/(?:facebook\.com\/.+\/videos\/|facebook\.com\/watch\/?\?v=|fb\.watch\/)/.test(u)) {
+    const src = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(u)}&autoplay=1&show_text=false`;
+    return `<iframe src="${src}" ${iframeAttrs} scrolling="no" allow="autoplay; encrypted-media"></iframe>`;
+  }
+
+  // ৭. সরাসরি video file (.mp4/.webm/.ogg/.mov/.m3u8) অথবা blob:/data:
+  if (/^(blob:|data:video\/)/i.test(u) || /\.(mp4|webm|ogg|ogv|mov|m4v|m3u8)(\?.*)?$/i.test(u)) {
+    return `<video src="${u}" poster="${poster}" controls autoplay playsinline
+      style="width:100%;height:100%;background:#000"></video>`;
+  }
+
+  // ৮. অজানা URL — iframe fallback চেষ্টা
+  return `<iframe src="${u}" ${iframeAttrs}></iframe>`;
+}
+
 
 /* =====================
    WATCH PAGE
@@ -275,22 +342,8 @@ function watchVideo(id) {
   saveVideos(videos);
 
   // Player
-  let playerHTML = '';
-  if (v.videoUrl) {
-    playerHTML = `<video src="${v.videoUrl}" poster="${v.thumbnail}" controls autoplay style="width:100%;height:100%;background:#000"></video>`;
-  } else {
-    playerHTML = `
-      <div class="watch-no-video">
-        <img class="bg-blur" src="${v.thumbnail}" onerror="">
-        <div class="watch-no-video-inner">
-          <div style="font-size:60px">▶</div>
-          <p style="font-size:15px;margin-top:10px">ভিডিও URL সংযুক্ত করা হয়নি</p>
-          <p style="font-size:13px;color:#6b7280;margin-top:4px">Admin Panel থেকে Video URL যোগ করুন</p>
-        </div>
-      </div>`;
-  }
-  document.getElementById('watchPlayer').innerHTML = playerHTML;
-
+// Player (YouTube/Drive/Vimeo/FB/Dailymotion/direct mp4 সবই support করে)
+  document.getElementById('watchPlayer').innerHTML = getPlayerEmbed(v.videoUrl, v.thumbnail);
   // Tags
   document.getElementById('watchTags').innerHTML = `
     <span class="tag tag-purple">${catLabel(v.category).replace(/[🌸🎬📺🎨🧒]\s*/,'').toUpperCase()}</span>
