@@ -1,82 +1,266 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Anime Holl</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StreamVault</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Anime Holl</h1>
-  </header>
 
-  <main class="gallery">
-    <div class="card" data-id="video1">
-      <video width="100%" controls>
-        <source src="VID_20250425_122519.mp4" type="video/mp4">
-      </video>
-      <div class="info">
-        <span class="tag">Full Video</span>
-        <h2>Attack on Titan</h2>
-        <p>Rating: <span class="rating">9.0</span></p>
-        <div class="actions">
-          <button class="like-button">👍 Like (<span class="like-count">0</span>)</button>
-          <div class="views">👁️ Views: <span class="view-count">0</span></div>
-        </div>
-        
-        <div class="comment-section">
-          <input type="text" placeholder="Write a comment..." class="comment-input" />
-          <button class="submit-comment">Post</button>
-          <div class="comment-list"></div>
+<!-- ========== ADMIN LOGIN MODAL ========== -->
+<div class="modal-overlay" id="adminLoginModal">
+  <div class="modal-box" style="position:relative">
+    <button class="modal-close" onclick="closeAdminModal()">✕</button>
+    <div class="modal-icon">🔐</div>
+    <h2>Admin Panel</h2>
+    <p>প্রবেশ করতে পাসওয়ার্ড দিন</p>
+    <input type="password" class="modal-input" id="adminPassInput"
+      placeholder="পাসওয়ার্ড লিখুন"
+      onkeydown="if(event.key==='Enter') checkAdminPass()">
+    <button class="modal-btn" onclick="checkAdminPass()">🔓 Login করুন</button>
+    <p class="modal-error" id="adminPassErr"></p>
+  </div>
+</div>
+
+<!-- ========== NAVBAR ========== -->
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">
+    <div class="nav-logo-icon">▶</div>
+    <span>StreamVault</span>
+  </div>
+  <div class="nav-links">
+    <button class="nav-btn" id="nav-home" onclick="showPage('home')">🏠 Home</button>
+    <button class="nav-btn" id="nav-browse" onclick="showPage('browse')">🔍 Browse</button>
+    <button class="nav-admin-btn" onclick="openAdmin()">⚙️ Admin Panel</button>
+  </div>
+</nav>
+
+<!-- ==================== HOME PAGE ==================== -->
+<div id="page-home" class="page active">
+  <div class="page-content">
+
+    <!-- Hero -->
+    <div class="hero">
+      <img id="heroImg" class="hero-bg" src="" alt="">
+      <div class="hero-grad-left"></div>
+      <div class="hero-grad-bottom"></div>
+      <div class="hero-content">
+        <div class="hero-tags" id="heroTags"></div>
+        <h1 id="heroTitle">StreamVault-এ স্বাগতম</h1>
+        <p id="heroDesc">আপনার পছন্দের অ্যানিমে, মুভি ও সিরিজ এক জায়গায়।</p>
+        <div class="hero-btns">
+          <button class="btn btn-white" onclick="playHero()">▶ এখনই দেখুন</button>
+          <button class="btn btn-glass" onclick="infoHero()">ℹ️ বিস্তারিত</button>
         </div>
       </div>
     </div>
-    <div class="card" data-id="video2">
-  <video width="100%" controls>
-    <source src="VID_20250425_122519.mp4" type="video/mp4">
-  </video>
-  <div class="info">
-    <span class="tag">Full Video</span>
-    <h2>Demon Slayer</h2>
-    <p>Rating: <span class="rating">8.5</span></p>
-    <div class="actions">
-      <button class="like-button">👍 Like (<span class="like-count">0</span>)</button>
-      <div class="views">👁️ Views: <span class="view-count">0</span></div>
+<p>My name is Riyad Hasan
+<a href="update.html">Photos Page এ যাও</a>
+</p>
+    <!-- Category Pills -->
+    <div class="pills-row" id="homePills"></div>
+
+    <!-- Trending -->
+    <div class="section">
+      <h2 class="sec-title">🔥 ট্রেন্ডিং এখন</h2>
+      <div class="carousel" id="trendingRow"></div>
     </div>
-    <div class="comment-section">
-      <input type="text" placeholder="Write a comment..." class="comment-input" />
-      <button class="submit-comment">Post</button>
-      <div class="comment-list"></div>
+
+    <!-- New Releases -->
+    <div class="section">
+      <h2 class="sec-title">✨ নতুন রিলিজ</h2>
+      <div class="vgrid" id="newGrid"></div>
     </div>
-  </div>
-</div>
-<div class="card" data-id="video3">
-  <video width="100%" controls>
-    <source src="VID_20250425_122519.mp4" type="video/mp4">
-  </video>
-  <div class="info">
-    <span class="tag">Full Video</span>
-    <h2>Demon Slayer</h2>
-    <p>Rating: <span class="rating">8.9</span></p>
-    <div class="actions">
-      <button class="like-button">👍 Like (<span class="like-count">0</span>)</button>
-      <div class="views">👁️ Views: <span class="view-count">0</span></div>
+
+    <!-- All -->
+    <div class="section" id="allSec">
+      <h2 class="sec-title" id="allTitle">🎬 সব ভিডিও</h2>
+      <div class="vgrid" id="allGrid"></div>
     </div>
-    <div class="comment-section">
-      <input type="text" placeholder="Write a comment..." class="comment-input" />
-      <button class="submit-comment">Post</button>
-      <div class="comment-list"></div>
-    </div>
+
   </div>
 </div>
 
-  </main>
+<!-- ==================== BROWSE PAGE ==================== -->
+<div id="page-browse" class="page">
+  <div class="page-content">
+    <div class="browse-header">
+      <h1>কন্টেন্ট খুঁজুন</h1>
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="অ্যানিমে, মুভি, সিরিজ..." oninput="debounceSearch()">
+      </div>
+    </div>
+    <div class="pills-row" id="browsePills"></div>
+    <div style="padding:0 32px 60px">
+      <p id="browseLabel" style="color:var(--text-muted);font-size:14px;margin-bottom:16px"></p>
+      <div class="vgrid" id="browseGrid"></div>
+    </div>
+  </div>
+</div>
 
-  <footer class="footer">
-    <p>&copy; 2025 Anime Holl. All rights reserved.</p>
-  </footer>
+<!-- ==================== WATCH PAGE ==================== -->
+<div id="page-watch" class="page">
+  <div class="page-content">
+    <div class="watch-player-wrap">
+      <div class="watch-player-inner" id="watchPlayer"></div>
+    </div>
+    <div class="watch-body">
+      <div class="watch-main">
+        <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px" id="watchTags"></div>
+        <h1 class="watch-title" id="watchTitle"></h1>
+        <div class="watch-meta" id="watchMeta"></div>
+        <div class="watch-desc" id="watchDesc"></div>
+        <button class="btn btn-glass btn-sm" style="margin-top:18px" onclick="history.back(); showPage('home')">← ফিরে যান</button>
+      </div>
+      <div class="watch-side">
+        <h3>পরবর্তী দেখুন</h3>
+        <div id="watchRec"></div>
+      </div>
+    </div>
+  </div>
+</div>
 
-  <script src="script.js"></script>
+<!-- ==================== ADMIN PAGE ==================== -->
+<div id="page-admin" class="page">
+  <div class="page-content">
+    <div class="admin-outer">
+      <div class="admin-header">
+        <h1>⚙️ Admin Dashboard</h1>
+        <button class="btn btn-primary btn-sm" onclick="scrollToUploadForm()">+ নতুন ভিডিও</button>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid" id="adminStats"></div>
+
+      <!-- Upload/Edit Form -->
+      <div class="upload-card" id="uploadFormCard">
+        <h2 id="uploadFormTitle">➕ নতুন ভিডিও আপলোড করুন</h2>
+
+        <div class="thumb-prev-wrap">
+          <div style="flex:1;min-width:240px">
+            <div class="form-row">
+              <div class="form-group full">
+                <label>ভিডিও টাইটেল *</label>
+                <input type="text" class="form-input" id="f_title" placeholder="যেমন: Bleach Season 1 Ep 1">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label>বিবরণ (Description)</label>
+                <textarea class="form-textarea" id="f_desc" placeholder="ভিডিওর সংক্ষিপ্ত বিবরণ..."></textarea>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label>থাম্বনেইল ইমেজ</label>
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                  <input type="url" class="form-input" id="f_thumb" placeholder="URL: https://example.com/cover.jpg" oninput="prevThumb()" style="flex:1;min-width:180px">
+                  <span style="color:var(--text-muted);font-size:13px;white-space:nowrap">অথবা</span>
+                  <button type="button" class="btn btn-glass btn-sm" style="background:var(--card);border:1px solid var(--border);white-space:nowrap" onclick="document.getElementById('f_thumb_file').click()">
+                    📁 ফাইল থেকে বেছে নিন
+                  </button>
+                  <input type="file" id="f_thumb_file" accept="image/*" style="display:none" onchange="loadThumbFile(event)">
+                </div>
+                <p id="thumbFileName" style="font-size:12px;color:var(--primary-light);margin-top:4px;display:none"></p>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label>ভিডিও ফাইল / URL</label>
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                  <input type="url" class="form-input" id="f_video" placeholder="URL: https://example.com/video.mp4" style="flex:1;min-width:180px">
+                  <span style="color:var(--text-muted);font-size:13px;white-space:nowrap">অথবা</span>
+                  <button type="button" class="btn btn-glass btn-sm" style="background:var(--card);border:1px solid var(--border);white-space:nowrap" onclick="document.getElementById('f_video_file').click()">
+                    🎬 ভিডিও আপলোড করুন
+                  </button>
+                  <input type="file" id="f_video_file" accept="video/*" style="display:none" onchange="loadVideoFile(event)">
+                </div>
+                <p id="videoFileName" style="font-size:12px;color:var(--primary-light);margin-top:4px;display:none"></p>
+                <p style="font-size:11px;color:var(--text-muted);margin-top:3px">⚠️ বড় ভিডিও ফাইলের জন্য URL ব্যবহার করুন (localStorage সীমা: ~50MB)</p>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>ক্যাটাগরি *</label>
+                <select class="form-select" id="f_cat">
+                  <option value="anime">🌸 Anime</option>
+                  <option value="movie">🎬 Movie</option>
+                  <option value="tv">📺 TV Series</option>
+                  <option value="animation">🎨 US Animation</option>
+                  <option value="kids">🧒 Kids</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>ভাষা</label>
+                <input type="text" class="form-input" id="f_lang" placeholder="যেমন: Hindi, Japanese">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>সময়কাল (Duration)</label>
+                <input type="text" class="form-input" id="f_dur" placeholder="যেমন: 24:30">
+              </div>
+              <div class="form-group">
+                <label>রিলিজ বছর</label>
+                <input type="text" class="form-input" id="f_year" placeholder="যেমন: 2024">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label>রেটিং (১-৫ স্টার)</label>
+                <div class="star-row" id="starRow">
+                  <button class="star-btn" data-v="1" onclick="setRating(1)">★</button>
+                  <button class="star-btn" data-v="2" onclick="setRating(2)">★</button>
+                  <button class="star-btn" data-v="3" onclick="setRating(3)">★</button>
+                  <button class="star-btn" data-v="4" onclick="setRating(4)">★</button>
+                  <button class="star-btn" data-v="5" onclick="setRating(5)">★</button>
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label>ট্যাগ</label>
+                <div class="check-row">
+                  <label class="check-item"><input type="checkbox" id="f_new"> ✨ নতুন (NEW)</label>
+                  <label class="check-item"><input type="checkbox" id="f_trend"> 🔥 ট্রেন্ডিং</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Thumbnail Preview -->
+          <div>
+            <p style="font-size:12px;color:var(--text-muted);margin-bottom:8px;text-transform:uppercase;font-weight:700;letter-spacing:0.6px">থাম্বনেইল প্রিভিউ</p>
+            <div class="thumb-preview-box" id="thumbPreview">
+              <span>ছবির URL দিন</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="saveVideo()">💾 সেভ করুন</button>
+          <button class="btn btn-glass" style="background:var(--card);border:1px solid var(--border)" onclick="resetForm()">✕ বাতিল</button>
+        </div>
+      </div>
+
+      <!-- Videos Table -->
+      <div class="table-card">
+        <div class="table-card-header">
+          <h2>📋 সব ভিডিও</h2>
+          <span id="vidCount" style="color:var(--text-muted);font-size:14px"></span>
+        </div>
+        <div id="adminTable"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- ==================== JAVASCRIPT ==================== -->
+<script src="script.js"></script>
 </body>
 </html>
